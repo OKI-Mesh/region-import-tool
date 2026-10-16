@@ -218,3 +218,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+.DS_Store
+.geob_cache/
+.python-version
+.vscode/
+check.png
+http_cache.sqlite
+out/

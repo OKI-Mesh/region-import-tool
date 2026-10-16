@@ -1,0 +1,79 @@
+# Example config for region-import-tool. Edit the groups and county lists to
+# suit your network; the metro county lists are illustrations, not authoritative.
+#
+#   uv run region-import-tool groupings.example.yaml --out-dir out
+#
+# One top-level block per ISO3 country code. The whole file is validated before
+# anything is downloaded; errors name the exact path (e.g. USA.regions.0.us-midwest).
+USA:
+  # Required. What this country calls each admin level. Only ADM1 and ADM2 are
+  # supported. The first label per level names the full-layer file
+  # (states.geojson / counties.geojson). Several labels may share a level.
+  levels:
+    states: ADM1
+    counties: ADM2
+
+  # Group types: regions, meshregions, metros (each optional, at least one group
+  # overall). Each is a list of {group-name: members}. Group names must be unique
+  # across all three types because they become file names.
+  #
+  # ADM1 members are a list of codes (shapeISO, e.g. us-oh) or names (Ohio).
+  regions:
+    - us-midwest:
+        states: [us-ia, us-il, us-in, us-mi, us-oh, us-wi]
+    - us-southeast:
+        states: [us-al, us-ar, us-fl, us-ga, us-ky, us-la, us-ms, us-nc, us-sc, us-tn]
+
+  meshregions:
+    - oki:
+        states: [us-in, us-ky, us-oh]
+
+  # ADM2 members are a mapping of parent -> list of names, so same-named counties
+  # in different states never collide ("Butler" under us-oh is not Butler, KY).
+  # A county may appear in more than one metro. A group may also list both
+  # `states:` and `counties:`.
+  metros:
+    - cvg:
+        counties:
+          us-oh: [Hamilton, Butler, Warren, Clermont]
+          us-ky: [Boone, Kenton, Campbell]
+          us-in: [Dearborn]
+    - day:
+        counties:
+          us-oh: [Montgomery, Greene, Miami]
+
+  # Optional. Size and content of the outputs.
+  output:
+    simplified: true          # use geoBoundaries' pre-simplified geometry
+    simplify: 0.005           # extra tolerance in degrees (~500 m); 0 = off
+    precision: 4              # coordinate decimals (~10 m)
+    members_only: true        # base layers keep only units that belong to a group
+    base_layers: [states]     # full layers to write: true | false | [states] | [counties]
+    dissolve: [metros]        # merge each group's file into one shape (see README)
+
+  # Required. Produces layers.json for the Leaflet viewer.
+  manifest:
+    # file: layers.json       # default
+    base_url: /data/usa       # prefix added to every url in layers.json (optional)
+    layers:
+      # type: a group type (regions, meshregions, metros) or your ADM1 label (states)
+      # in:   draw from another group type's files instead of this type's own
+      # any other key is copied into layers.json unchanged
+      - {id: macro, label: Regions, type: regions, colorBy: feature, highlight: false, coverage: full}
+      - {id: mesh,  label: Regional Meshes, type: meshregions, in: regions}
+      - {id: state, label: State, type: states, nameProperty: shapeISO}
+      - {id: metro, label: Metro, type: metros, nameProperty: iata, optional: true,
+         colorBy: feature, allowOverlap: true}
+
+# A country that calls its levels something else just changes the labels, and uses
+# ISO 3166-2 codes with the two-letter country prefix (ca-on, not can-on):
+#
+# CAN:
+#   levels: {provinces: ADM1}
+#   regions:
+#     - can-atlantic: {provinces: [ca-nl, ca-ns, ca-nb, ca-pe]}
+#   output: {base_layers: [provinces]}
+#   manifest:
+#     layers:
+#       - {id: macro, label: Regions, type: regions}
+#       - {id: prov, label: Province, type: provinces, nameProperty: shapeISO}

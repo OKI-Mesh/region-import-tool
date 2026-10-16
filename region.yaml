@@ -1,0 +1,45 @@
+USA:
+  levels:                  # what this country calls each admin level
+    states: ADM1
+    counties: ADM2
+  output:
+    dissolve: [regions, metros, meshregions]
+    simplified: false
+    base_layers: [states]
+  manifest:
+    base_url: "region-layers/"
+    layers:
+      - {id: macro, label: Regions, type: regions, colorBy: feature, highlight: false, coverage: full}
+      - {id: mesh, label: Regional Meshes, type: meshregions}
+      - {id: state, label: State, type: states, nameProperty: shapeISO}
+      - {id: metro, label: Metro, optional: true, type: metros, nameProperty: iata, colorBy: feature, allowOverlap: true}
+  regions:
+    - us-midwest:
+        states: [us-ia, us-il, us-in, us-mi, us-oh, us-wi]
+    - us-southeast:
+        states: [us-al, us-ar, us-fl, us-ga, us-ky, us-la, us-ms, us-nc, us-sc, us-tn, us-va]
+  meshregions:
+    - oki:
+        states: [us-in, us-ky, us-oh]
+  metros:
+    - aoh:
+        counties:
+          us-oh: [Allen, Auglaize, Hardin, Logan, Mercer, Putnam, Van Wert]
+    - chm:
+        counties:
+          us-oh: [Delaware, Fairfield, Franklin, Hocking, Knox, Licking, Madison, Morrow, Perry, Pickaway, Union]
+    - cvg:
+        counties:
+          us-in: [Dearborn, Decatur, Franklin, Jennings, Jefferson, Ohio, Ripley, Switzerland]
+          us-ky: [Boone, Bracken, Campbell, Carroll, Gallatin, Grant, Kenton, Mason, Owen, Pendleton]
+          us-oh: [Adams, Brown, Butler, Clermont, Clinton, Hamilton, Highland, Warren]
+    - fwa:
+        counties:
+          us-in: [Adams, Allen, DeKalb, Huntington, LaGrange, Noble, Steuben, Wabash, Wells, Whitley]
+    - day:
+        counties:
+          us-in: [Fayette, Jay, Randolph, Union, Wayne]
+          us-oh: [Champaign, Clark, Darke, Fayette, Greene, Miami, Montgomery, Preble, Shelby]
+    - ind:
+        counties:
+          us-in: [Bartholomew, Benton, Blackford, Boone, Brown, Carroll, Cass, Clay, Clinton, Delaware, Fountain, Fulton, Grant, Greene, Hamilton, Hancock, Hendricks, Henry, Howard, Jackson, Jasper, Johnson, Lawrence, Madison, Marion, Miami, Morgan, Monroe, Montgomery, Newton, Orange, Owen, Parke, Pulaski, Putnam, Rush, Shelby, Sullivan, Tippecanoe, Tipton, Vermillion, Vigo, Warren, White]
