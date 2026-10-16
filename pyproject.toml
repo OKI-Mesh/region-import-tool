@@ -18,7 +18,7 @@ dependencies = [
 ]
 
 [project.scripts]
-region-import-tool = "main:cli"
+region-import-tool = "region_import_tool.main:cli"
 
 [build-system]
 requires = ["uv_build>=0.12.0,<0.13.0"]
