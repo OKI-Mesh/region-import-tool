@@ -226,3 +226,5 @@ __marimo__/
 check.png
 http_cache.sqlite
 out/
+
+region.yaml
